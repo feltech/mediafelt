@@ -22,7 +22,9 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   --tv-dir TV_DIR       Directory relative to destination to place TV shows
+                        (default: Series)
   --movie-dir MOVIE_DIR
                         Directory relative to destination to place movies
-  --dry-run             Don't actually move anything
+                        (default: Movies)
+  --dry-run             Don't actually move anything (default: False)
 ```

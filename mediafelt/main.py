@@ -16,7 +16,9 @@ log = logging.getLogger(__name__)
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Parse and move media files')
+    parser = argparse.ArgumentParser(
+        description="Parse and move media files",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         'source', type=str, help='Source directory/file')
     parser.add_argument(
