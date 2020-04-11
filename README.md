@@ -1,4 +1,5 @@
 # mediafelt
+```
 usage: mediafelt [-h] [--tv-dir TV_DIR] [--movie-dir MOVIE_DIR] [--dry-run]
                  source destination
 
@@ -14,4 +15,4 @@ optional arguments:
   --movie-dir MOVIE_DIR
                         Directory relative to destination to place movies
   --dry-run             Don't actually move anything
-
+```
