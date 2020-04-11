@@ -45,7 +45,6 @@ def main():
         file_paths = [args.source]
 
     # log.debug(file_paths)
-
     execute(
         file_paths, args.destination, args.movie_dir, args.tv_dir,
         args.dry_run)
@@ -58,19 +57,15 @@ def execute(file_paths, destination, movie_dir, tv_dir, dry_run):
 
     if episodes is not None:
         path_mapping = get_episode_paths(episodes)
-        path_prefix = os.path.abspath(
-            os.path.join(destination, tv_dir))
-        path_mapping = get_dest_paths(
-            path_prefix, path_mapping)
+        path_prefix = os.path.abspath(os.path.join(destination, tv_dir))
+        path_mapping = get_dest_paths(path_prefix, path_mapping)
         move_files(path_mapping, dry_run)
 
     if movies is not None:
         clean_multi_file_movies(movies)
         path_mapping = get_movie_paths(movies)
-        path_prefix = os.path.abspath(
-            os.path.join(destination, movie_dir))
-        path_mapping = get_dest_paths(
-            path_prefix, path_mapping)
+        path_prefix = os.path.abspath(os.path.join(destination, movie_dir))
+        path_mapping = get_dest_paths(path_prefix, path_mapping)
         move_files(path_mapping, dry_run)
 
 
@@ -123,7 +118,7 @@ def clean_multi_file_movies(movies):
         if file_list.all_contain_non_equal("screen_size"):
             file_list_sorted = file_list.sort(
                 lambda file_info: int(
-                    re.sub('[^0-9]','', file_info["screen_size"])))
+                    re.sub('[^0-9]', '', file_info["screen_size"])))
         else:
             file_list_sorted = file_list.sort(
                 lambda file_info: os.path.getsize(file_info["file_path"]))
@@ -251,6 +246,14 @@ class FileInfo(object):
         if season:
             season = "S%02d" % season
         return season
+
+    @property
+    def video_profile(self):
+        video_profile = self.__file_info.get("video_profile")
+        if video_profile is not None:
+            video_profile = video_profile.replace(
+                "High Efficiency Video Coding", "HEVC")
+        return video_profile
 
     def __getattr__(self, property):
         return self.__file_info.get(property)
