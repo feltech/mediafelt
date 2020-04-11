@@ -1,5 +1,6 @@
 # mediafelt
-Parse movie and TV show file names in one directory (e.g. downloads), then
+Parse movie and TV show file names in one directory (e.g. downloads) using
+the excellent [guessit](https://github.com/guessit-io/guessit) library, then
 rename and move the files to a Kodi-compatible directory structure.
 
 Will only move files, not delete them.  It is left as a manual step to
