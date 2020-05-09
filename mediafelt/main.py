@@ -77,7 +77,7 @@ def _execute(file_paths, destination, movie_dir, tv_dir, dry_run):
     Parse and move (unless a dry run) a given list of files
 
     :param file_paths: list of input files relative to working directory
-    :param destination: root of desitnation to move files
+    :param destination: root of destination to move files
     :param movie_dir: path relative to destination to move movies
     :param tv_dir: path relative to destination to move TV episodes
     :param dry_run: don't actually move any files
@@ -277,12 +277,13 @@ class _FileInfo:
         file_path_to = "%s%s" % (
             os.path.join(title, file_name), file_ext)
         file_path_to = file_path_to.replace(" ", ".")
-        return (file_path_from, file_path_to)
+        return file_path_from, file_path_to
 
     @property
     def episode(self):
         """
         Construct episode string
+        
         :return: season+episode(s) or date
         """
         season = self.__season
@@ -294,6 +295,8 @@ class _FileInfo:
             episode = "%sE%02d" % (season, episode)
         else:
             episode = self.__file_info.get("date")
+            if episode is not None:
+                episode = episode.strftime("%Y-%m-%d")
         return episode
 
     @property
@@ -467,15 +470,15 @@ def _setup_logging():
     sys.excepthook = _exc_hook
 
 
-def _exc_hook(_exc_type, value, _tb):
+def _exc_hook(exc_type, value, tb):
     """
     Exception hook to log exceptions
 
-    :param _exc_type: unused
+    :param exc_type: type of exception
     :param value: exception object
-    :param _tb: unused
+    :param tb: traceback object
     """
-    LOG.exception("Uncaught exception: %s", str(value))
+    LOG.exception("Uncaught exception", exc_info=(exc_type, value, tb))
 
 
 _setup_logging()
