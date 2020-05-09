@@ -283,7 +283,7 @@ class _FileInfo:
     def episode(self):
         """
         Construct episode string
-        
+
         :return: season+episode(s) or date
         """
         season = self.__season
@@ -470,15 +470,15 @@ def _setup_logging():
     sys.excepthook = _exc_hook
 
 
-def _exc_hook(exc_type, value, tb):
+def _exc_hook(exc_type, value, exc_tb):
     """
     Exception hook to log exceptions
 
     :param exc_type: type of exception
     :param value: exception object
-    :param tb: traceback object
+    :param exc_tb: traceback object
     """
-    LOG.exception("Uncaught exception", exc_info=(exc_type, value, tb))
+    LOG.exception("Uncaught exception", exc_info=(exc_type, value, exc_tb))
 
 
 _setup_logging()
