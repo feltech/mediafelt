@@ -11,17 +11,17 @@ handlers:
     level: DEBUG
     formatter: simple
     stream: ext://sys.stderr
-  tmplog:
+  file:
     class: logging.FileHandler
     level: INFO
     formatter: simple
-    filename: "/tmp/mediafelt.log"
+    filename: "mediafelt.log"
 
 loggers:
   mediafelt:
-    handlers: [console, tmplog]
+    handlers: [console, file]
     propagate: false
 
 root:
   level: INFO
-  handlers: [console, tmplog]
+  handlers: [console, file]

@@ -465,6 +465,9 @@ def _setup_logging():
 
     with open(os.path.join(directory, "logging.yaml")) as file:
         config = yaml.safe_load(file.read())
+    log_file = os.environ.get("MEDIAFELT_LOG_FILE")
+    if log_file:
+        config["handlers"]["file"]["filename"] = log_file
     logging.config.dictConfig(config)
 
     sys.excepthook = _exc_hook
