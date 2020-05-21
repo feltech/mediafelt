@@ -40,10 +40,13 @@ def main():
         default="Movies")
     parser.add_argument(
         '--dry-run', action="store_true", help="Don't actually move anything")
+    parser.add_argument(
+        '--log-file', type=str, help="Path to log file",
+        default="mediafelt.log")
+
     args = parser.parse_args()
 
-    parser.add_argument(
-        'destination', type=str, help='Root destination directory')
+    _setup_logging(args.log_file)
 
     LOG.info("Parsing with arguments: %s", str(args))
 
@@ -457,7 +460,7 @@ def _dumps(file_infos):
     return json.dumps(file_infos, indent=2, default=str)
 
 
-def _setup_logging():
+def _setup_logging(log_file):
     """
     Read logging YAML config and set up catch-all logging for exceptions
     """
@@ -465,9 +468,8 @@ def _setup_logging():
 
     with open(os.path.join(directory, "logging.yaml")) as file:
         config = yaml.safe_load(file.read())
-    log_file = os.environ.get("MEDIAFELT_LOG_FILE")
-    if log_file:
-        config["handlers"]["file"]["filename"] = log_file
+
+    config["handlers"]["file"]["filename"] = log_file
     logging.config.dictConfig(config)
 
     sys.excepthook = _exc_hook
@@ -482,6 +484,3 @@ def _exc_hook(exc_type, value, exc_tb):
     :param exc_tb: traceback object
     """
     LOG.exception("Uncaught exception", exc_info=(exc_type, value, exc_tb))
-
-
-_setup_logging()
