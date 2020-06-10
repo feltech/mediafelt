@@ -334,6 +334,8 @@ class _FileInfo:
         :return: audio codec string
         """
         audio_codec = self.__file_info.get("audio_codec")
+        if isinstance(audio_codec, list):
+            audio_codec = ".".join(audio_codec)
         if audio_codec is not None:
             audio_codec = audio_codec.replace(
                 "Dolby Digital Plus", "DDP").replace("Dolby Digital", "DD")
