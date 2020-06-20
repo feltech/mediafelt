@@ -111,33 +111,47 @@ def _parse_files(file_paths):
     :return: list of file infos by title by type (movie or episode)
     """
     # log.debug("Found: %s", file_paths)
-    file_infos = collections.defaultdict(lambda: collections.defaultdict(list))
+    guessits_by_title_by_type = collections.defaultdict(
+        lambda: collections.defaultdict(list))
     # Parse file names.
     for file_path in file_paths:
-        file_info = guessit.guessit(file_path)
+        path_guessit = guessit.guessit(file_path)
         file_name = os.path.split(file_path)[-1]
         if file_name != file_path:
-            file_info_file = guessit.guessit(file_name)
-            file_info.update(file_info_file)
-        file_info["file_path"] = file_path
-        title = file_info.get("series", file_info.get("title"))
+            file_guessit = guessit.guessit(file_name)
+            path_guessit.update(file_guessit)
+        path_guessit["file_path"] = file_path
+        title = path_guessit.get("series", path_guessit.get("title"))
         title = title.title()
-        file_infos[file_info.get("type")][title].append(file_info)
+        if path_guessit.get("date") and path_guessit.get("season"):
+            # Strip bogus episode details if date-based.
+            if path_guessit["date"].year == path_guessit["season"]:
+                path_guessit.pop("season", None)
+                path_guessit.pop("episode", None)
+                path_guessit.pop("episode_title", None)
+
+        guessits_by_title_by_type[
+            path_guessit.get("type")][title].append(path_guessit)
 
     # Add year to title if available.
-    for _media_type, file_info_list_by_title in file_infos.items():
+    for _media_type, guessits_by_title in guessits_by_title_by_type.items():
         title_map = []
-        for title, file_info_list in file_info_list_by_title.items():
+        for title, guessits in guessits_by_title.items():
+            file_infos = tuple(
+                _FileInfo(path_guessit) for path_guessit in guessits)
+            if any(file_info.date for file_info in file_infos):
+                # Ignore titles with a full date, we want only year.
+                continue
             years = tuple(filter(None, (
-                _FileInfo(file_info).year for file_info in file_info_list)))
+                file_info.year for file_info in file_infos)))
             if years and all(year == years[0] for year in years):
                 title_map.append((title, "%s %s" % (title, years[0])))
 
         for old_title, new_title in title_map:
-            file_info_list_by_title[new_title] = file_info_list_by_title.pop(
+            guessits_by_title[new_title] = guessits_by_title.pop(
                 old_title)
 
-    return file_infos
+    return guessits_by_title_by_type
 
 
 def _clean_multi_file_movies(movies):
